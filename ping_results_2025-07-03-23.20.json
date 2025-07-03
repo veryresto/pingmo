@@ -1,0 +1,284 @@
+{
+  "summary": {
+    "monitoring_started": "2025-07-03T23:20:38.058055",
+    "monitoring_ended": "2025-07-03T23:21:06.954062",
+    "total_pings": 28,
+    "successful_pings": 28,
+    "failed_pings": 0,
+    "success_rate": 100.0,
+    "target": "1.1.1.1",
+    "interval_seconds": 1.0,
+    "avg_latency_ms": 22.616071428571427,
+    "median_latency_ms": 17.762,
+    "min_latency_ms": 17.304,
+    "max_latency_ms": 142.201,
+    "std_dev_ms": 23.070800074256777,
+    "p95_latency_ms": 26.061,
+    "p99_latency_ms": 142.201,
+    "spike_analysis": {
+      "spikes_above_50ms": {
+        "count": 1,
+        "percentage": 3.571428571428571,
+        "values": [
+          142.201
+        ]
+      },
+      "spikes_above_100ms": {
+        "count": 1,
+        "percentage": 3.571428571428571,
+        "values": [
+          142.201
+        ]
+      },
+      "spikes_above_150ms": {
+        "count": 0,
+        "percentage": 0.0,
+        "values": []
+      },
+      "spikes_above_200ms": {
+        "count": 0,
+        "percentage": 0.0,
+        "values": []
+      },
+      "spikes_above_300ms": {
+        "count": 0,
+        "percentage": 0.0,
+        "values": []
+      },
+      "spikes_above_500ms": {
+        "count": 0,
+        "percentage": 0.0,
+        "values": []
+      },
+      "statistical_outliers": {
+        "two_std_dev": {
+          "threshold_ms": 68.75767157708498,
+          "count": 1,
+          "percentage": 3.571428571428571,
+          "values": [
+            142.201
+          ]
+        },
+        "three_std_dev": {
+          "threshold_ms": 91.82847165134176,
+          "count": 1,
+          "percentage": 3.571428571428571,
+          "values": [
+            142.201
+          ]
+        },
+        "iqr_method": {
+          "threshold_ms": 18.6085,
+          "count": 4,
+          "percentage": 14.285714285714285,
+          "values": [
+            142.201,
+            20.247,
+            19.139,
+            26.061
+          ]
+        },
+        "median_3x": {
+          "threshold_ms": 53.286,
+          "count": 1,
+          "percentage": 3.571428571428571,
+          "values": [
+            142.201
+          ]
+        }
+      },
+      "video_conferencing_quality": {
+        "excellent_0_20ms": {
+          "count": 25,
+          "percentage": 89.28571428571429
+        },
+        "good_20_50ms": {
+          "count": 2,
+          "percentage": 7.142857142857142
+        },
+        "acceptable_50_100ms": {
+          "count": 0,
+          "percentage": 0.0
+        },
+        "poor_100_200ms": {
+          "count": 1,
+          "percentage": 3.571428571428571
+        },
+        "very_poor_above_200ms": {
+          "count": 0,
+          "percentage": 0.0
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "timestamp": "2025-07-03T23:20:38.058463",
+      "target": "1.1.1.1",
+      "latency_ms": 142.201,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:39.209369",
+      "target": "1.1.1.1",
+      "latency_ms": 17.75,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:40.237273",
+      "target": "1.1.1.1",
+      "latency_ms": 17.951,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:41.265705",
+      "target": "1.1.1.1",
+      "latency_ms": 18.249,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:42.292350",
+      "target": "1.1.1.1",
+      "latency_ms": 17.708,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:43.317101",
+      "target": "1.1.1.1",
+      "latency_ms": 20.247,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:44.343178",
+      "target": "1.1.1.1",
+      "latency_ms": 17.63,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:45.370949",
+      "target": "1.1.1.1",
+      "latency_ms": 17.583,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:46.398454",
+      "target": "1.1.1.1",
+      "latency_ms": 17.774,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:47.422109",
+      "target": "1.1.1.1",
+      "latency_ms": 17.934,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:48.448516",
+      "target": "1.1.1.1",
+      "latency_ms": 17.731,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:49.474462",
+      "target": "1.1.1.1",
+      "latency_ms": 17.823,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:50.499605",
+      "target": "1.1.1.1",
+      "latency_ms": 17.818,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:51.525860",
+      "target": "1.1.1.1",
+      "latency_ms": 18.034,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:52.554435",
+      "target": "1.1.1.1",
+      "latency_ms": 17.687,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:53.582784",
+      "target": "1.1.1.1",
+      "latency_ms": 17.779,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:54.607009",
+      "target": "1.1.1.1",
+      "latency_ms": 19.139,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:55.636800",
+      "target": "1.1.1.1",
+      "latency_ms": 17.585,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:56.663755",
+      "target": "1.1.1.1",
+      "latency_ms": 17.602,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:57.692593",
+      "target": "1.1.1.1",
+      "latency_ms": 17.621,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:58.717678",
+      "target": "1.1.1.1",
+      "latency_ms": 17.304,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:20:59.740748",
+      "target": "1.1.1.1",
+      "latency_ms": 17.816,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:21:00.768763",
+      "target": "1.1.1.1",
+      "latency_ms": 18.016,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:21:01.792548",
+      "target": "1.1.1.1",
+      "latency_ms": 17.522,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:21:02.814633",
+      "target": "1.1.1.1",
+      "latency_ms": 17.594,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:21:03.841138",
+      "target": "1.1.1.1",
+      "latency_ms": 17.747,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:21:04.864505",
+      "target": "1.1.1.1",
+      "latency_ms": 17.344,
+      "status": "success"
+    },
+    {
+      "timestamp": "2025-07-03T23:21:05.888023",
+      "target": "1.1.1.1",
+      "latency_ms": 26.061,
+      "status": "success"
+    }
+  ]
+}
