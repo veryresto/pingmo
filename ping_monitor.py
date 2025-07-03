@@ -122,11 +122,33 @@ class PingMonitor:
         }
         
         if latencies:
+            sorted_latencies = sorted(latencies)
+            n = len(latencies)
+            
+            # Basic statistics
+            avg_latency = sum(latencies) / n
+            median_latency = sorted_latencies[n//2] if n % 2 == 1 else (sorted_latencies[n//2-1] + sorted_latencies[n//2]) / 2
+            
+            # Percentile calculations
+            p95_latency = sorted_latencies[int(0.95 * n)] if n > 0 else 0
+            p99_latency = sorted_latencies[int(0.99 * n)] if n > 0 else 0
+            
+            # Standard deviation
+            variance = sum((x - avg_latency) ** 2 for x in latencies) / n
+            std_dev = variance ** 0.5
+            
+            # Spike detection using multiple methods
+            spike_stats = self.calculate_spike_statistics(latencies, avg_latency, median_latency, std_dev)
+            
             summary.update({
-                "avg_latency_ms": sum(latencies) / len(latencies),
+                "avg_latency_ms": avg_latency,
+                "median_latency_ms": median_latency,
                 "min_latency_ms": min(latencies),
                 "max_latency_ms": max(latencies),
-                "median_latency_ms": sorted(latencies)[len(latencies)//2]
+                "std_dev_ms": std_dev,
+                "p95_latency_ms": p95_latency,
+                "p99_latency_ms": p99_latency,
+                "spike_analysis": spike_stats
             })
         
         # Save to file
@@ -146,10 +168,112 @@ class PingMonitor:
             print(f"   Success rate: {summary['success_rate']:.1f}%")
             if latencies:
                 print(f"   Average latency: {summary['avg_latency_ms']:.2f}ms")
+                print(f"   Median latency: {summary['median_latency_ms']:.2f}ms")
                 print(f"   Min/Max latency: {summary['min_latency_ms']:.2f}ms / {summary['max_latency_ms']:.2f}ms")
+                print(f"   95th percentile: {summary['p95_latency_ms']:.2f}ms")
+                print(f"   99th percentile: {summary['p99_latency_ms']:.2f}ms")
+                print(f"   Standard deviation: {summary['std_dev_ms']:.2f}ms")
+                
+                # Spike summary
+                spike_stats = summary['spike_analysis']
+                print(f"\n🔥 Spike Analysis:")
+                print(f"   Spikes > 100ms: {spike_stats['spikes_above_100ms']['count']} ({spike_stats['spikes_above_100ms']['percentage']:.1f}%)")
+                print(f"   Spikes > 200ms: {spike_stats['spikes_above_200ms']['count']} ({spike_stats['spikes_above_200ms']['percentage']:.1f}%)")
+                print(f"   Statistical outliers (2σ): {spike_stats['statistical_outliers']['two_std_dev']['count']} ({spike_stats['statistical_outliers']['two_std_dev']['percentage']:.1f}%)")
+                
+                # Video conferencing quality
+                quality = spike_stats['video_conferencing_quality']
+                print(f"\n📹 Video Conferencing Quality:")
+                print(f"   Excellent (0-20ms): {quality['excellent_0_20ms']['percentage']:.1f}%")
+                print(f"   Good (20-50ms): {quality['good_20_50ms']['percentage']:.1f}%")
+                print(f"   Acceptable (50-100ms): {quality['acceptable_50_100ms']['percentage']:.1f}%")
+                print(f"   Poor (100-200ms): {quality['poor_100_200ms']['percentage']:.1f}%")
+                print(f"   Very Poor (>200ms): {quality['very_poor_above_200ms']['percentage']:.1f}%")
             
         except IOError as e:
             print(f"❌ Error saving results: {e}")
+    
+    def calculate_spike_statistics(self, latencies, avg_latency, median_latency, std_dev):
+        """Calculate comprehensive spike statistics"""
+        spike_stats = {}
+        
+        # Method 1: Fixed thresholds (good for video conferencing)
+        thresholds = [50, 100, 150, 200, 300, 500]
+        for threshold in thresholds:
+            spikes = [x for x in latencies if x > threshold]
+            spike_stats[f"spikes_above_{threshold}ms"] = {
+                "count": len(spikes),
+                "percentage": (len(spikes) / len(latencies)) * 100,
+                "values": spikes if len(spikes) <= 10 else spikes[-10:]  # Last 10 spikes if too many
+            }
+        
+        # Method 2: Statistical outliers (2 standard deviations)
+        outlier_threshold_2sd = avg_latency + (2 * std_dev)
+        outliers_2sd = [x for x in latencies if x > outlier_threshold_2sd]
+        
+        # Method 3: Statistical outliers (3 standard deviations)
+        outlier_threshold_3sd = avg_latency + (3 * std_dev)
+        outliers_3sd = [x for x in latencies if x > outlier_threshold_3sd]
+        
+        # Method 4: IQR method (Interquartile Range)
+        sorted_latencies = sorted(latencies)
+        n = len(latencies)
+        q1 = sorted_latencies[n//4]
+        q3 = sorted_latencies[3*n//4]
+        iqr = q3 - q1
+        iqr_threshold = q3 + (1.5 * iqr)
+        iqr_outliers = [x for x in latencies if x > iqr_threshold]
+        
+        # Method 5: Median-based spike detection
+        median_threshold = median_latency * 3  # 3x median
+        median_spikes = [x for x in latencies if x > median_threshold]
+        
+        # Add statistical methods to results
+        spike_stats.update({
+            "statistical_outliers": {
+                "two_std_dev": {
+                    "threshold_ms": outlier_threshold_2sd,
+                    "count": len(outliers_2sd),
+                    "percentage": (len(outliers_2sd) / len(latencies)) * 100,
+                    "values": outliers_2sd if len(outliers_2sd) <= 10 else outliers_2sd[-10:]
+                },
+                "three_std_dev": {
+                    "threshold_ms": outlier_threshold_3sd,
+                    "count": len(outliers_3sd),
+                    "percentage": (len(outliers_3sd) / len(latencies)) * 100,
+                    "values": outliers_3sd if len(outliers_3sd) <= 10 else outliers_3sd[-10:]
+                },
+                "iqr_method": {
+                    "threshold_ms": iqr_threshold,
+                    "count": len(iqr_outliers),
+                    "percentage": (len(iqr_outliers) / len(latencies)) * 100,
+                    "values": iqr_outliers if len(iqr_outliers) <= 10 else iqr_outliers[-10:]
+                },
+                "median_3x": {
+                    "threshold_ms": median_threshold,
+                    "count": len(median_spikes),
+                    "percentage": (len(median_spikes) / len(latencies)) * 100,
+                    "values": median_spikes if len(median_spikes) <= 10 else median_spikes[-10:]
+                }
+            }
+        })
+        
+        # Quality assessment for video conferencing
+        excellent_count = len([x for x in latencies if x <= 20])
+        good_count = len([x for x in latencies if 20 < x <= 50])
+        acceptable_count = len([x for x in latencies if 50 < x <= 100])
+        poor_count = len([x for x in latencies if 100 < x <= 200])
+        very_poor_count = len([x for x in latencies if x > 200])
+        
+        spike_stats["video_conferencing_quality"] = {
+            "excellent_0_20ms": {"count": excellent_count, "percentage": (excellent_count / len(latencies)) * 100},
+            "good_20_50ms": {"count": good_count, "percentage": (good_count / len(latencies)) * 100},
+            "acceptable_50_100ms": {"count": acceptable_count, "percentage": (acceptable_count / len(latencies)) * 100},
+            "poor_100_200ms": {"count": poor_count, "percentage": (poor_count / len(latencies)) * 100},
+            "very_poor_above_200ms": {"count": very_poor_count, "percentage": (very_poor_count / len(latencies)) * 100}
+        }
+        
+        return spike_stats
 
 def main():
     """Main function with command line argument parsing"""
