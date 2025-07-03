@@ -14,10 +14,18 @@ from datetime import datetime
 import re
 
 class PingMonitor:
-    def __init__(self, target="8.8.8.8", interval=1, output_file="ping_results.json"):
+    def __init__(self, target="1.1.1.1", interval=1, output_file=None):
         self.target = target
         self.interval = interval
-        self.output_file = output_file
+        self.start_time = datetime.now()
+        
+        # Generate filename with datetime if not provided
+        if output_file is None:
+            timestamp = self.start_time.strftime("%Y-%m-%d-%H.%M")
+            self.output_file = f"ping_results_{timestamp}.json"
+        else:
+            self.output_file = output_file
+            
         self.results = []
         self.running = True
         
@@ -103,8 +111,8 @@ class PingMonitor:
         latencies = [r["latency_ms"] for r in successful_pings]
         
         summary = {
-            "monitoring_started": self.results[0]["timestamp"] if self.results else None,
-            "monitoring_ended": self.results[-1]["timestamp"] if self.results else None,
+            "monitoring_started": self.start_time.isoformat(),
+            "monitoring_ended": datetime.now().isoformat(),
             "total_pings": len(self.results),
             "successful_pings": len(successful_pings),
             "failed_pings": len(self.results) - len(successful_pings),
@@ -148,12 +156,12 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(description="Monitor ping latency on macOS")
-    parser.add_argument("--target", "-t", default="8.8.8.8", 
-                       help="Target IP address or hostname (default: 8.8.8.8)")
+    parser.add_argument("--target", "-t", default="1.1.1.1", 
+                       help="Target IP address or hostname (default: 1.1.1.1)")
     parser.add_argument("--interval", "-i", type=float, default=1.0,
                        help="Ping interval in seconds (default: 1.0)")
-    parser.add_argument("--output", "-o", default="ping_results.json",
-                       help="Output file name (default: ping_results.json)")
+    parser.add_argument("--output", "-o", default=None,
+                       help="Output file name (default: ping_results_YYYY-MM-DD-HH.MM.json)")
     
     args = parser.parse_args()
     
