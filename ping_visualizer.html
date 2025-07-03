@@ -377,7 +377,31 @@
             const statsGrid = document.getElementById('statsGrid');
             const quality = summary.spike_analysis.video_conferencing_quality;
             
+            // Calculate duration
+            const startTime = new Date(summary.monitoring_started);
+            const endTime = new Date(summary.monitoring_ended);
+            const durationMs = endTime - startTime;
+            const durationMinutes = Math.floor(durationMs / 60000);
+            const durationSeconds = Math.floor((durationMs % 60000) / 1000);
+            const durationText = durationMinutes > 0 ? `${durationMinutes}m ${durationSeconds}s` : `${durationSeconds}s`;
+            
+            // Format times
+            const startTimeFormatted = startTime.toLocaleString();
+            const endTimeFormatted = endTime.toLocaleString();
+            
             statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value" style="font-size: 1.2em;">${startTimeFormatted}</div>
+                    <div class="stat-label">Start Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="font-size: 1.2em;">${endTimeFormatted}</div>
+                    <div class="stat-label">End Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${durationText}</div>
+                    <div class="stat-label">Duration</div>
+                </div>
                 <div class="stat-card">
                     <div class="stat-value">${summary.total_pings}</div>
                     <div class="stat-label">Total Pings</div>
