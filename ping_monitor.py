@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Ping Latency Monitor for macOS
+Cross-platform Ping Latency Monitor
 Continuously monitors ping latency and saves results to a file.
 Press Ctrl+C to stop monitoring and save results.
 """
@@ -41,19 +41,30 @@ class PingMonitor:
     
     def ping_once(self):
         """Execute a single ping and return latency in ms"""
+        is_windows = sys.platform.startswith('win')
+
+        # Platform-specific ping command arguments
+        count_param = "-n" if is_windows else "-c"
+        # -W is timeout in ms on macOS, -w is timeout in ms on Windows.
+        # On Linux, -W is timeout in seconds. The script was written for macOS,
+        # so we assume the timeout value is in milliseconds.
+        timeout_param = "-w" if is_windows else "-W"
+        
+        command = ["ping", count_param, "1", timeout_param, "2000", self.target]
+        
         try:
-            # Use ping command with 1 packet, 2 second timeout
-            result = subprocess.run(
-                ["ping", "-c", "1", "-W", "2000", self.target],
-                capture_output=True,
-                text=True,
-                timeout=5
-            )
+            kwargs = {'capture_output': True, 'text': True, 'timeout': 5}
+            if is_windows:
+                # 0x08000000 is subprocess.CREATE_NO_WINDOW.
+                # This flag prevents the console window from popping up on Windows.
+                kwargs['creationflags'] = 0x08000000
+
+            result = subprocess.run(command, **kwargs)
             
             if result.returncode == 0:
                 # Parse ping output for latency
-                # Look for pattern like "time=12.345 ms"
-                match = re.search(r'time=(\d+\.?\d*) ms', result.stdout)
+                # macOS/Linux: "time=12.345 ms" | Windows: "time=12ms" or "time<1ms"
+                match = re.search(r'time[=<]([0-9\.]+)', result.stdout)
                 if match:
                     return float(match.group(1))
             
@@ -279,7 +290,7 @@ def main():
     """Main function with command line argument parsing"""
     import argparse
     
-    parser = argparse.ArgumentParser(description="Monitor ping latency on macOS")
+    parser = argparse.ArgumentParser(description="Monitor ping latency.")
     parser.add_argument("--target", "-t", default="1.1.1.1", 
                        help="Target IP address or hostname (default: 1.1.1.1)")
     parser.add_argument("--interval", "-i", type=float, default=1.0,
